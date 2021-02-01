@@ -15,3 +15,14 @@ get '/fibonacci/:value' do |value|
     end
 end
 
+get '/fibonacci/golden_ratio/:value' do |value|
+    fibonacci = Calculations::Fibonacci.new
+    begin
+        convertedValue = Integer(value)
+        "fibonacci sequence for #{value} is #{fibonacci.golden_ratio(convertedValue)}"
+    rescue ArgumentError => exception
+        "ArgumentError: #{exception}"
+    end
+end
+
+
