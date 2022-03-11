@@ -5,13 +5,21 @@ require 'fibonacci'
 
 set :app_file, __FILE__
 
+cache = Hash.new
+fibonacci = Calculations::Fibonacci.new
+
 get '/fibonacci/:value' do |value|
-    fibonacci = Calculations::Fibonacci.new
     begin
         convertedValue = Integer(value)
-        "fibonacci sequence for #{value} is #{fibonacci.sequence(convertedValue)}"
+        sequence =  cache.key?(convertedValue) ? cache[convertedValue] : fibonacci.sequence(convertedValue)
+        cache[convertedValue] = sequence if ! cache.key?(convertedValue)
+        "fibonacci sequence for #{value} is #{sequence}"
     rescue ArgumentError => exception
-        "ArgumentError: #{exception}"
+        if value == 'cache'
+            fibonacci.cache
+        else
+            "ArgumentError: #{exception}"
+        end
     end
 end
 

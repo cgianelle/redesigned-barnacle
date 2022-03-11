@@ -1,18 +1,21 @@
-FROM ruby:2.6.6
+FROM ruby:2.6.7-alpine
 
 ENV REDESIGNED_BARNACLE_PORT 6009
 ENV APP_DIR /usr/app
-RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
+
+COPY Gemfile .
+COPY Gemfile.lock .
+RUN mkdir -p ${APP_DIR} && \
+    apk update && apk upgrade && apk add --no-cache alpine-sdk gmp-dev && \
+    gem install bundler && bundle update && \
+    bundle config without test && \
+    bundle install
 
 COPY config config
 COPY config.ru .
-COPY Gemfile .
-COPY Gemfile.lock .
 COPY server.rb .
 COPY lib lib
-
-RUN gem install bundler && bundle install
 
 EXPOSE ${REDESIGNED_BARNACLE_PORT}
 

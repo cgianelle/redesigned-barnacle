@@ -1,14 +1,20 @@
 module Calculations
     GOLDEN_RATIO = (1 + Math.sqrt(5))/2
     class Fibonacci
+        attr_reader :cache
+        def initialize
+            @cache = Hash.new
+        end
+
         def sequence(value)
             case value
             when 0
                 return 0
-            when 1
+            when 1..2
                 return 1
             else
-                sequence(value - 1) + sequence(value - 2)
+                return @cache[value] if @cache.key?(value)
+                @cache[value] = sequence(value - 1) + sequence(value - 2)
             end
         end
 
